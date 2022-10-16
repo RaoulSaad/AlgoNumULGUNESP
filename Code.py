@@ -24,27 +24,29 @@ def Calculate_TrigonometricFunction(function, point):
     value -= function["Constant"]
     return value
 
-def Create_PolynomialFunction(coef):
+def Create_PolynomialFunction(coef, pow):
     PolynomialFunctions = {
-        "Coeficients" : np.array([]), #Ex: np.array([1,2,3,4,-5]) -> 1 + 2x + 3x^2 + 4x^3 - 5x^4 
+        "Coeficients" : np.array([]), #Ex: np.array([1,2,3,4,-5])
+        "Power" : np.array([]) # Ex: np.array([0,1,3,5,7]) -> 1 + 2x + 3x^3 + 4x^5 - 5x^7
     }
     PolynomialFunctions["Coeficients"] = coef
+    PolynomialFunctions["Power"] = pow
     return PolynomialFunctions
 
 def Calculate_PolynomialFunction(function, point):
     value = 0
     for i in range(len(function["Coeficients"])):
-        value += function["Coeficients"][i]*(point)**i
+        value += function["Coeficients"][i]*(point)**function["Power"][i]
     return value
 
 def DerivativeCalculator(Function, point, Polynomial = True):
     if Polynomial: #if the function is a polynomial
         new_coef = []
-        
+        new_pow = []
         for i in range(1,len(Function["Coeficients"])):
-            new_coef.append(Function["Coeficients"][i]*i) # a[1] * 1 * x^(1-1) + a[2] * 2 * x^(2-1) + ... + a[i] * 1 * x^(i-1)
-        
-        derivative = Create_PolynomialFunction(np.array(new_coef)) #the derivative
+            new_coef.append(Function["Coeficients"][i]*Function["Power"][i]) # a[1] * 1 * x^(1-1) + a[2] * 2 * x^(2-1) + ... + a[i] * 1 * x^(i-1)
+            new_pow.append(Function["Power"][i]-1)
+        derivative = Create_PolynomialFunction(np.array(new_coef), np.array(new_pow)) #the derivative
         return Calculate_PolynomialFunction(derivative, point) #the value of the derivative on a specific point given
     
     else: #if the function is trigonometric
@@ -120,9 +122,10 @@ def Jacobian_Matrix(EqSys, vector):
 
 # ===== Some tests ===== #
 
-poly_func1 = Create_PolynomialFunction(np.array([1,2,2])) # 1 + 2x + 2x^2
+poly_func1 = Create_PolynomialFunction(np.array([1,2,2]), np.array([0,1,3])) # 1 + 2x + 2x^3
 print(poly_func1["Coeficients"])
-poly_func1_prime = DerivativeCalculator(poly_func1, 1) # 2 + 4*1 = 6
+print(poly_func1["Power"])
+poly_func1_prime = DerivativeCalculator(poly_func1, 2) # 2 + 6*4 = 26
 print(poly_func1_prime)
 
 trig_func1 = Create_TrigonometricFunction(np.array([4]), np.array([4, -4]), 5)
