@@ -3,14 +3,18 @@ import numpy as np
 from math import *
 
 # ======== Trigonometric and Polynomial Functions ======== #
-def Create_TrigonometricFunction(cos_coef, sin_coef, cons):
+def Create_TrigonometricFunction(cos_coef, sin_coef, cos_pos, sin_pos, cons):
     TrigonometricFunctions = {
-        "Cos_Coeficients" : np.array([]), #Ex: np.array([-1,0,2,1]) -> -cos(x) + 2cos(3x) + cos(4x)
-        "Sin_Coeficients" : np.array([]), #Ex: np.array([4,0,2]) -> 4sin(x) + 2cos(2x)
+        "Cos_Coeficients" : np.array([]), #Ex: np.array([-1,2,1]) 
+        "Cos_Position" : np.array([]), #Ex: np.array([1,3,4]) -> -cos(x) + 2cos(3x) + cos(4x)
+        "Sin_Coeficients" : np.array([]), #Ex: np.array([4,2]) 
+        "Sin_Position" : np.array([]), #Ex: np.array([1,2]) -> 4sin(x) + 2cos(2x)
         "Constant" : None # Ex: 3 -> -cos(x) + 2cos(3x) + cos(4x) + 4sin(x) + 2cos(2x) = 3
     }
     TrigonometricFunctions["Cos_Coeficients"] = cos_coef
     TrigonometricFunctions["Sin_Coeficients"] = sin_coef
+    TrigonometricFunctions["Cos_Position"] = cos_pos
+    TrigonometricFunctions["Sin_Position"] = sin_pos
     TrigonometricFunctions["Constant"] = cons
     
     return TrigonometricFunctions
@@ -18,9 +22,9 @@ def Create_TrigonometricFunction(cos_coef, sin_coef, cons):
 def Calculate_TrigonometricFunction(function, point):
     value = 0
     for i in range(len(function["Cos_Coeficients"])):
-        value += function["Cos_Coeficients"][i]*cos((i+1)*point) # a[1]*cos(1*point) + a[2]*cos(2*point) + ... + a[i]*cos(i*point)
+        value += function["Cos_Coeficients"][i]*cos(function["Cos_Position"][i]*point) # a[1]*cos(1*point) + a[2]*cos(2*point) + ... + a[i]*cos(i*point)
     for i in range(len(function["Sin_Coeficients"])):
-        value += function["Sin_Coeficients"][i]*sin((i+1)*point) # b[1]*sin(1*point) + b[2]*sin(2*point) + ... + b[i]*sin(i*point)
+        value += function["Sin_Coeficients"][i]*sin(function["Sin_Position"][i]*point) # b[1]*sin(1*point) + b[2]*sin(2*point) + ... + b[i]*sin(i*point)
     value -= function["Constant"]
     return value
 
@@ -54,11 +58,11 @@ def DerivativeCalculator(Function, point, Polynomial = True):
         new_cos_coef = []
         
         for i in range(len(Function["Cos_Coeficients"])):
-            new_sin_coef.append(-Function["Cos_Coeficients"][i]*(i+1)) # a[1]* 1 * (-sin(1*x)) + ... + a[i]* i * (-sin(i*x))
+            new_sin_coef.append(-Function["Cos_Coeficients"][i]*Function["Cos_Position"][i]) # a[1]* 1 * (-sin(1*x)) + ... + a[i]* i * (-sin(i*x))
         for i in range(len(Function["Sin_Coeficients"])):
-            new_cos_coef.append(Function["Sin_Coeficients"][i]*(i+1)) # a[1]* 1 * cos(1*x) + ... + a[i]* i * cos(i*x)
+            new_cos_coef.append(Function["Sin_Coeficients"][i]*Function["Sin_Position"][i]) # a[1]* 1 * cos(1*x) + ... + a[i]* i * cos(i*x)
         
-        derivative = Create_TrigonometricFunction(np.array(new_cos_coef), np.array(new_sin_coef), 0) #the derivative
+        derivative = Create_TrigonometricFunction(np.array(new_cos_coef), np.array(new_sin_coef), Function["Sin_Position"], Function["Cos_Position"], 0) #the derivative
         return Calculate_TrigonometricFunction(derivative, point) #the value of the derivative on a specific point given
 
 # ======== System of Equations ======== #
@@ -128,7 +132,7 @@ print(poly_func1["Power"])
 poly_func1_prime = DerivativeCalculator(poly_func1, 2) # 2 + 6*4 = 26
 print(poly_func1_prime)
 
-trig_func1 = Create_TrigonometricFunction(np.array([4]), np.array([4, -4]), 5)
+trig_func1 = Create_TrigonometricFunction(np.array([4]), np.array([4, -4]), np.array([1]), np.array([1,2]), 5)
 print("Coef of cos:", trig_func1["Cos_Coeficients"])
 print("Coef of sin:", trig_func1["Sin_Coeficients"])
 trig_func1_prime = DerivativeCalculator(trig_func1, 1, False)
