@@ -9,7 +9,7 @@ This project was developed in collaboration between Université de Liège, Lièg
 In this repository you will find implementations of analytical derivatives, Jacobian Matrix (the matrix of first partial derivatives) and all this will culminate in the implementation of a numerical algorithm: Newton method in order to solve one of the four general forms of equations and systems.
 
 # Code Flow
-![DataFlow](https://github.com/RaoulSaad/AlgoNumULGUNESP/blob/main/dataFlow.jpg)
+![DataFlow]([https://github.com/RaoulSaad/AlgoNumULGUNESP/blob/main/dataFlow.jpg](https://github.com/RaoulSaad/AlgoNumULGUNESP/blob/main/DataFlow.jpg))
 
 # How execute the project
 Prerequisites: Python 3.x
