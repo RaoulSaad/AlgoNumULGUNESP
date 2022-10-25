@@ -22,6 +22,6 @@ git clone
 Using the terminal from your IDE, find the directory where you clone the project and enter it.
 
 # Running the project
-python3 execute.py
+python3 user.py
 
 ```
